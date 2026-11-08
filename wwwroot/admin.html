@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>لوحة التحكم</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/admin.css">
+</head>
+<body>
+
+<div id="loginScreen" class="login-screen">
+  <div class="login-card">
+    <div class="login-logo">🌳</div>
+    <h1>لوحة التحكم</h1>
+    <p>سجّل الدخول للمتابعة</p>
+    <input type="text" id="loginUser" placeholder="اسم المستخدم" autocomplete="username">
+    <input type="password" id="loginPass" placeholder="كلمة السر" autocomplete="current-password">
+    <button id="loginBtn">دخول</button>
+    <p id="loginError" class="error-msg"></p>
+  </div>
+</div>
+
+<div id="appScreen" class="app-screen" style="display:none">
+  <aside class="sidebar">
+    <div class="sidebar-logo">🌳</div>
+    <nav class="nav">
+      <button class="nav-btn active" data-tab="orders">📋 الطلبات</button>
+      <button class="nav-btn" data-tab="tables">🪑 الطاولات</button>
+      <button class="nav-btn" data-tab="menu">🍽 المنيو</button>
+      <button class="nav-btn" data-tab="reports">📊 التقارير</button>
+      <button class="nav-btn" data-tab="qr">📱 QR Codes</button>
+      <button class="nav-btn admin-only" data-tab="users">👥 المستخدمين</button>
+    </nav>
+    <div class="user-info">
+      <small>مسجل كـ</small>
+      <strong id="currentUser"></strong>
+    </div>
+    <button class="logout-btn" id="logoutBtn">تسجيل خروج</button>
+  </aside>
+
+  <main class="content">
+    <section id="tab-orders" class="tab active">
+      <h2>الطلبات النشطة</h2>
+      <div id="ordersGrid" class="orders-grid"></div>
+    </section>
+
+    <section id="tab-tables" class="tab">
+      <h2>الطاولات</h2>
+      <div id="tablesGrid" class="tables-grid"></div>
+    </section>
+
+    <section id="tab-menu" class="tab">
+      <h2>إدارة المنيو</h2>
+      <button class="primary-btn admin-only" id="addItemBtn" style="margin-bottom:16px">➕ إضافة صنف</button>
+      <div id="menuAdmin"></div>
+    </section>
+
+    <section id="tab-reports" class="tab">
+      <h2>تقارير اليوم</h2>
+      <div id="reportContent"></div>
+    </section>
+
+    <section id="tab-qr" class="tab">
+      <h2>QR Codes للطاولات</h2>
+      <p class="hint">اطبع كل QR وضعه على الطاولة المقابلة</p>
+      <button class="primary-btn" onclick="window.open('/print.html','_blank')" style="margin-bottom:20px">🖨️ طباعة كل الأكواد</button>
+      <div id="qrGrid" class="qr-grid"></div>
+    </section>
+
+    <section id="tab-users" class="tab">
+      <h2>إدارة المستخدمين</h2>
+      <button class="primary-btn" id="addUserBtn" style="margin-bottom:16px">➕ إضافة مستخدم</button>
+      <div id="usersList"></div>
+    </section>
+  </main>
+</div>
+
+<!-- مودال إضافة/تعديل صنف -->
+<div class="modal-overlay" id="itemModal">
+  <div class="modal">
+    <h3 id="itemModalTitle">إضافة صنف</h3>
+    <input type="hidden" id="itemId">
+    <label>الاسم</label>
+    <input type="text" id="itemName" placeholder="مثال: برجر لحم">
+    <label>الوصف</label>
+    <input type="text" id="itemDesc" placeholder="اختياري">
+    <label>السعر (ج.م)</label>
+    <input type="number" id="itemPrice" min="0" step="0.5">
+    <label>التصنيف</label>
+    <select id="itemCategory"></select>
+    <label>الصورة (اختياري)</label>
+    <input type="file" id="itemImage" accept="image/*">
+    <div id="imagePreview" class="image-preview"></div>
+    <div class="modal-actions">
+      <button class="cancel-btn" id="cancelItemBtn">إلغاء</button>
+      <button class="primary-btn" id="saveItemBtn">حفظ</button>
+    </div>
+  </div>
+</div>
+
+<!-- مودال إضافة مستخدم -->
+<div class="modal-overlay" id="userModal">
+  <div class="modal">
+    <h3>إضافة مستخدم</h3>
+    <label>اسم المستخدم</label>
+    <input type="text" id="newUserName" placeholder="cashier2">
+    <label>كلمة السر</label>
+    <input type="password" id="newUserPass" placeholder="على الأقل 4 أحرف">
+    <label>الدور</label>
+    <select id="newUserRole">
+      <option value="Cashier">كاشير</option>
+      <option value="Secretary">سكرتيرة</option>
+      <option value="Admin">مدير</option>
+    </select>
+    <div class="modal-actions">
+      <button class="cancel-btn" id="cancelUserBtn">إلغاء</button>
+      <button class="primary-btn" id="saveUserBtn">حفظ</button>
+    </div>
+  </div>
+</div>
+
+<script src="/js/admin.js"></script>
+</body>
+</html>
