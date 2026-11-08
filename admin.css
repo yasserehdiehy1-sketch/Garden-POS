@@ -1,0 +1,127 @@
+/* ═══════════ Modals ═══════════ */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(4px);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+}
+
+.modal-overlay.show { display: flex; }
+
+.modal {
+  background: var(--card);
+  border-radius: 20px;
+  padding: 28px;
+  width: 100%;
+  max-width: 480px;
+  border: 1px solid var(--border);
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.modal h3 {
+  font-size: 22px;
+  font-weight: 900;
+  margin-bottom: 20px;
+  color: var(--gold);
+}
+
+.modal label {
+  display: block;
+  color: var(--text-dim);
+  font-size: 13px;
+  font-weight: 600;
+  margin: 12px 0 6px;
+}
+
+.modal input, .modal select {
+  width: 100%;
+  padding: 12px 14px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  color: var(--text);
+  font-family: inherit;
+  font-size: 14px;
+}
+
+.modal input:focus, .modal select:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.modal-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 24px;
+}
+
+.primary-btn, .cancel-btn {
+  flex: 1;
+  padding: 12px;
+  border-radius: 10px;
+  border: none;
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.primary-btn {
+  background: linear-gradient(135deg, var(--gold), var(--accent));
+  color: #000;
+}
+
+.primary-btn:hover { opacity: 0.9; }
+.primary-btn:disabled { opacity: 0.5; }
+
+.cancel-btn {
+  background: var(--card-hover);
+  color: var(--text);
+}
+
+.image-preview { margin-top: 10px; }
+.image-preview img {
+  max-width: 120px;
+  border-radius: 10px;
+  border: 2px solid var(--border);
+}
+
+.user-info {
+  padding: 12px;
+  background: var(--bg);
+  border-radius: 10px;
+  margin-bottom: 12px;
+  font-size: 12px;
+}
+.user-info small { color: var(--text-dim); display: block; }
+.user-info strong { font-size: 14px; }
+
+.user-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 18px;
+  background: var(--card);
+  border-radius: 12px;
+  margin-bottom: 10px;
+  border: 1px solid var(--border);
+}
+
+.role-badge {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 700;
+  margin-right: 8px;
+}
+
+.role-Admin { background: rgba(255,184,0,.2); color: var(--gold); }
+.role-Cashier { background: rgba(74,222,128,.2); color: var(--success); }
+.role-Secretary { background: rgba(79,140,255,.2); color: #4F8CFF; }

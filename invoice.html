@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<title>فاتورة</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Cairo', sans-serif;
+    background: #f0f0f0;
+    padding: 20px;
+    min-height: 100vh;
+  }
+
+  .invoice {
+    max-width: 520px;
+    margin: 0 auto;
+    background: white;
+    color: #000;
+    padding: 32px;
+    border-radius: 12px;
+    border: 2px solid #000;
+    box-shadow: 0 10px 40px rgba(0,0,0,.15);
+  }
+
+  .inv-header {
+    text-align: center;
+    padding-bottom: 20px;
+    border-bottom: 2px dashed #000;
+    margin-bottom: 20px;
+  }
+  .inv-header h1 { font-size: 26px; font-weight: 900; }
+  .inv-header p { font-size: 13px; color: #666; margin-top: 4px; }
+
+  .inv-info {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    font-size: 13px;
+    padding: 12px 16px;
+    background: #f5f5f5;
+    border-radius: 8px;
+    margin-bottom: 20px;
+  }
+  .inv-info div { display: flex; justify-content: space-between; }
+  .inv-info strong { font-weight: 900; }
+
+  .inv-items { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+  .inv-items th, .inv-items td {
+    padding: 10px 6px;
+    font-size: 13px;
+    border-bottom: 1px solid #e5e5e5;
+    text-align: right;
+  }
+  .inv-items th {
+    background: #f5f5f5;
+    font-weight: 900;
+    font-size: 12px;
+    border-bottom: 2px solid #000;
+  }
+  .inv-items th:last-child, .inv-items td:last-child { text-align: left; }
+  .inv-items th:nth-child(2), .inv-items td:nth-child(2) { text-align: center; }
+
+  .inv-total {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 20px;
+    background: #000;
+    color: white;
+    border-radius: 8px;
+    font-size: 18px;
+    font-weight: 900;
+    margin-bottom: 24px;
+  }
+
+  .inv-note {
+    background: #fffbe6;
+    border-right: 3px solid #fbbf24;
+    padding: 10px 14px;
+    border-radius: 6px;
+    font-size: 12px;
+    color: #92400e;
+    margin-bottom: 20px;
+  }
+
+  .inv-footer {
+    text-align: center;
+    padding-top: 20px;
+    border-top: 2px dashed #000;
+    font-size: 13px;
+    line-height: 1.8;
+    color: #333;
+  }
+  .inv-footer strong { font-size: 15px; color: #000; }
+
+  .inv-actions {
+    text-align: center;
+    margin-top: 24px;
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+  }
+  .inv-actions button {
+    padding: 12px 28px;
+    border: none;
+    border-radius: 10px;
+    font-family: inherit;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: opacity .2s;
+  }
+  .inv-actions button:hover { opacity: .85; }
+  .btn-print { background: #FF6B35; color: white; }
+  .btn-close { background: #ddd; color: #000; }
+
+  .loading, .error {
+    text-align: center;
+    padding: 60px 20px;
+    font-size: 16px;
+    color: #666;
+  }
+  .error { color: #dc2626; }
+
+  @media print {
+    @page { size: A5; margin: 6mm; }
+    body { background: white; padding: 0; }
+    .invoice { box-shadow: none; margin: 0; border-width: 1px; max-width: 100%; }
+    .inv-actions { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="invoice" id="invoice">
+  <div class="loading">⏳ جاري تحميل الفاتورة...</div>
+</div>
+
+<script>
+const params = new URLSearchParams(location.search);
+const orderId = params.get('id');
+
+if (!orderId || isNaN(orderId)) {
+  document.getElementById('invoice').innerHTML =
+    '<div class="error">❌ رقم الفاتورة غير صحيح</div>';
+} else {
+  loadInvoice(orderId);
+}
+
+async function loadInvoice(id) {
+  try {
+    const res = await fetch(`/api/orders/${id}/invoice`);
+    if (!res.ok) throw new Error();
+    const o = await res.json();
+    render(o);
+  } catch {
+    document.getElementById('invoice').innerHTML =
+      '<div class="error">❌ الفاتورة غير موجودة أو حدث خطأ</div>';
+  }
+}
+
+function render(o) {
+  const d = new Date(o.paidAt || o.createdAt);
+  const dateStr = d.toLocaleString('ar-EG', {
+    year: 'numeric', month: '2-digit', day: '2-digit',
+    hour: '2-digit', minute: '2-digit'
+  });
+  const invNum = '#' + String(o.id).padStart(6, '0');
+
+  const rows = o.items.map(i => `
+    <tr>
+      <td>${escapeHtml(i.itemName)}</td>
+      <td>${i.quantity}</td>
+      <td>${i.unitPrice} ج.م</td>
+      <td>${i.subtotal} ج.م</td>
+    </tr>
+  `).join('');
+
+  document.getElementById('invoice').innerHTML = `
+    <div class="inv-header">
+      <h1>🌳 حديقة الألعاب</h1>
+      <p>فاتورة ضريبية مبسطة</p>
+    </div>
+
+    <div class="inv-info">
+      <div><span>طاولة:</span><strong>${o.tableNumber}</strong></div>
+      <div><span>فاتورة:</span><strong>${invNum}</strong></div>
+      <div style="grid-column:1/-1"><span>التاريخ:</span><strong>${dateStr}</strong></div>
+    </div>
+
+    ${o.customerNote ? `<div class="inv-note">📝 ${escapeHtml(o.customerNote)}</div>` : ''}
+
+    <table class="inv-items">
+      <thead>
+        <tr>
+          <th>الصنف</th>
+          <th>الكمية</th>
+          <th>السعر</th>
+          <th>المجموع</th>
+        </tr>
+      </thead>
+      <tbody>${rows}</tbody>
+    </table>
+
+    <div class="inv-total">
+      <span>الإجمالي</span>
+      <strong>${o.totalAmount} ج.م</strong>
+    </div>
+
+    <div class="inv-footer">
+      <strong>شكراً لزيارتكم 🌳</strong>
+      <p>نتشرف بزيارتكم مرة أخرى</p>
+      <p style="font-size:11px;margin-top:8px;color:#999">
+        الدفع: نقدي عند الكاشير
+      </p>
+    </div>
+
+    <div class="inv-actions">
+      <button class="btn-print" onclick="window.print()">🖨️ طباعة</button>
+      <button class="btn-close" onclick="window.close()">إغلاق</button>
+    </div>
+  `;
+}
+
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"']/g, c => ({
+    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+  })[c]);
+}
+</script>
+
+</body>
+</html>

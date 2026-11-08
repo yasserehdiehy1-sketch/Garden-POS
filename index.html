@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>منيو الحديقة</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/main.css">
+</head>
+<body>
+<div class="app">
+  <header class="header">
+    <div class="logo">🌳</div>
+    <div>
+      <h1>حديقة الألعاب</h1>
+      <p id="tableLabel">طاولة رقم —</p>
+    </div>
+  </header>
+
+  <nav class="categories" id="categories"></nav>
+
+  <main class="menu" id="menu"></main>
+
+  <button class="cart-fab" id="cartFab" aria-label="السلة">
+    🛒 <span class="badge" id="cartCount">0</span>
+  </button>
+
+  <div class="cart-drawer" id="cartDrawer">
+    <div class="cart-header">
+      <h2>سلة الطلبات</h2>
+      <button class="close-btn" id="closeCart">✕</button>
+    </div>
+    <div class="cart-items" id="cartItems"></div>
+    <div class="cart-footer">
+      <div class="total">
+        <span>الإجمالي</span>
+        <strong id="cartTotal">0 ج.م</strong>
+      </div>
+      <button class="checkout-btn" id="checkoutBtn">إرسال الطلب</button>
+    </div>
+  </div>
+
+  <div class="overlay" id="overlay"></div>
+
+  <div class="toast" id="toast"></div>
+</div>
+
+<script src="/js/main.js"></script>
+</body>
+</html>

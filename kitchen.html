@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>شاشة المطبخ</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/kitchen.css">
+</head>
+<body>
+<header class="k-header">
+  <h1>🍳 شاشة المطبخ</h1>
+  <div class="k-stats">
+    <span class="stat pending">جديد: <strong id="statPending">0</strong></span>
+    <span class="stat preparing">قيد التحضير: <strong id="statPreparing">0</strong></span>
+    <span class="stat ready">جاهز: <strong id="statReady">0</strong></span>
+  </div>
+</header>
+
+<main class="k-grid" id="orders"></main>
+
+<script src="/js/kitchen.js"></script>
+</body>
+</html>

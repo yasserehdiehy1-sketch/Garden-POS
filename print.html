@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<title>طباعة QR - حديقة الألعاب</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+  @page { size: A4; margin: 8mm; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Cairo', sans-serif; padding: 10mm; }
+
+  .toolbar {
+    text-align: center;
+    padding: 20px;
+    background: #f5f5f5;
+    margin-bottom: 20px;
+    border-radius: 12px;
+  }
+
+  .toolbar button {
+    padding: 12px 24px;
+    margin: 0 6px;
+    border-radius: 10px;
+    border: none;
+    font-family: inherit;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    background: #FF6B35;
+    color: white;
+  }
+
+  .toolbar button:hover { background: #e55a2a; }
+
+  .toolbar button.secondary { background: #666; }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6mm;
+  }
+
+  .card {
+    border: 3px dashed #999;
+    border-radius: 14px;
+    padding: 8mm 4mm;
+    text-align: center;
+    page-break-inside: avoid;
+    background: white;
+  }
+
+  .card img {
+    width: 100%;
+    max-width: 180px;
+    display: block;
+    margin: 0 auto;
+  }
+
+  .card h3 {
+    font-size: 22px;
+    font-weight: 900;
+    margin-top: 6mm;
+    color: #000;
+  }
+
+  .card p {
+    font-size: 12px;
+    color: #666;
+    margin-top: 2mm;
+  }
+
+  @media print {
+    .toolbar { display: none; }
+    body { padding: 0; }
+  }
+</style>
+</head>
+<body>
+
+<div class="toolbar">
+  <button onclick="window.print()">🖨️ طباعة</button>
+  <button class="secondary" onclick="window.close()">✕ إغلاق</button>
+</div>
+
+<div class="grid" id="grid">
+  <p style="text-align:center;grid-column:1/-1;">جاري التحميل...</p>
+</div>
+
+<script>
+fetch('/api/tables').then(r => r.json()).then(tables => {
+  const grid = document.getElementById('grid');
+  grid.innerHTML = '';
+  tables.forEach(t => {
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.innerHTML = `
+      <img src="/api/qr/${t.number}" alt="QR">
+      <h3>طاولة ${t.number}</h3>
+      <p>امسح الكود للطلب</p>
+    `;
+    grid.appendChild(card);
+  });
+}).catch(() => {
+  document.getElementById('grid').innerHTML = '<p>حدث خطأ في التحميل</p>';
+});
+</script>
+
+</body>
+</html>
